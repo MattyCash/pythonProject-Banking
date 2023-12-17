@@ -1,12 +1,13 @@
-import sqlite3
-import requests
+import base64
 import logging
 import os
+import sqlite3
+
+import requests
 from cryptography.fernet import Fernet
-import base64
-from bs4 import BeautifulSoup
 
 logging.basicConfig(filename='bank_system.log', level=logging.INFO, format='%(asctime)s [%(levelname)s]: %(message)s')
+
 
 class BankManagementSystem:
     def __init__(self):
@@ -64,7 +65,8 @@ class BankManagementSystem:
                     print("Пользователь с таким именем уже существует.")
                 else:
                     encrypted_password = self.encrypt_password(password)
-                    self.conn.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, encrypted_password))
+                    self.conn.execute("INSERT INTO users (username, password) VALUES (?, ?)",
+                                      (username, encrypted_password))
                     self.conn.commit()
                     print(f"Пользователь {username} успешно создан.")
                     logging.info(f"Создан новый пользователь: {username}")
@@ -210,7 +212,8 @@ class BankManagementSystem:
             if conversion_rate is not None:
                 converted_amount = amount * conversion_rate
                 print(f"{amount} {base_currency} равны {converted_amount:.2f} {target_currency}")
-                logging.info(f"Пользователь {user['username']} сконвертировал {amount} {base_currency} в {converted_amount:.2f} {target_currency}")
+                logging.info(
+                    f"Пользователь {user['username']} сконвертировал {amount} {base_currency} в {converted_amount:.2f} {target_currency}")
                 self.log_transaction(user['username'], 'Конвертация валюты', amount, target_currency)
             else:
                 print(f"Ошибка при получении курса конвертации для валюты: {target_currency}")
@@ -238,6 +241,7 @@ class BankManagementSystem:
         except sqlite3.Error as e:
             logging.error(f"Ошибка при закрытии соединения с базой данных: {e}")
             print(f"Ошибка при закрытии соединения с базой данных: {e}")
+
 
 def main():
     bank_system = BankManagementSystem()
@@ -267,6 +271,7 @@ def main():
             print(f"Произошла ошибка: {e}")
         finally:
             bank_system.log_transaction('Система', 'Выход из программы')
+
 
 if __name__ == "__main__":
     main()
